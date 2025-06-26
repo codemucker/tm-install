@@ -12,7 +12,7 @@ __tm_tpack_read_config(){
     local -A pkg
     __tm_tpack_parse_package_name "$qualified_name" pkg
     local namespace="${pkg['namespace']:-}"
-    local vendor="${pkg['vendor']:-none}"
+    local vendor="${pkg['vendor']:-no-vendor}"
     local package_name="${pkg['name']}"
     local version="${pkg['version']:-latest}"
 

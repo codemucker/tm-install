@@ -9,7 +9,7 @@ __tm_install_using_git() {
   _info "installing from git: $1"
 
   declare -A package
-  __tm_file_csv_to_array "$1" parts
+  _tm::file::csv::to_array "$1" parts
   local repo="${package[install]:-"${package[package]:-"${package[repo]:-}"}"}"
   local dest="${package[dir]:-"${package[dest]:-}"}"
   local commit="${package[version]:-"${package[commit]:-main}"}"

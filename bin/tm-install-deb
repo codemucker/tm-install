@@ -7,7 +7,7 @@ _include .script.sh
 
 __tm_install_from_url_deb() {
   declare -A parts
-  __tm_file_csv_to_array "$1" parts
+  _tm::file::csv::to_array "$1" parts
   local url="${parts[url]:-"${parts[install]:-"$1"}}"}"
 
   _info "install deb from url '$url'"

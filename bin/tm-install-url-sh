@@ -18,7 +18,7 @@ pkg="${args['package']}"
 
 __tm_install_from_url_sh() {
     declare -A parts
-    __tm_file_csv_to_array "$1" parts
+    _tm::file::csv::to_array "$1" parts
     local url="${parts[url]:-"${parts[install]:-"$1"}}"}"
     local user="${parts[user]:-user}"
 
