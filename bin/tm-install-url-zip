@@ -1,0 +1,51 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install from url as a zip file
+#
+
+_include .script.sh
+
+__tm_install_from_url_zip() {
+    declare -A parts
+    __tm_file_csv_to_array "$1" parts
+    local url="${parts[url]:-"${parts[install]:-"$1"}}"}"
+    local user="${parts[user]:-user}"
+    local script="${parts[script]:-}"
+    local dest="${parts[dir]:-"${parts[dest]:-}"}"
+
+    local prefix_cmd=""
+    if [[ "$user" == "root" ]]; then
+        prefix_cmd="sudo"
+    elif [[ "$user" == "user" ]]; then
+        prefix_cmd=""
+    else
+        _fail "don't understand user part '$user' in args '$1'. Expect 'user=user|root,url=<url>' where 'user' is one of user|root"
+   fi
+
+   local tmp_zip_file="$(mktemp)"
+   local tmp_unzip_dir="$(mktemp -d)"
+
+  _info "downloading, extracting and running (as user) url: '$1'"
+   # todo: check/add with allowed scripts
+
+   # download artifact
+   curl -fsSL "$url" --output "$tmp_zip_file"
+    if [[ -n "$dest" ]]; then
+      unzip "$tmp_zip_file" -d "$dest"
+      if [[ -n "$script" ]]; then
+        chmod a+x "$dest/$script"
+        $prefix_cmd "$dest/$script" || ( rm -fr "$tmp_zip_file" && echo "Error installing $url")
+      fi
+    elif [[ -n "$script" ]]; then
+      unzip "$tmp_zip_file" -d "$tmp_unzip_dir"
+      chmod a+x "$tmp_unzip_dir/$script"
+      $prefix_cmd "$tmp_unzip_dir/$script" || ( rm -fr "$tmp_zip_file" && rm -fr "$tmp_unzip_dir" && echo "Error installing $url")
+      rm -fr "$tmp_zip_file"
+      rm -fr "$tmp_unzip_dir"
+   else
+    _fail "no 'script' or 'dest' suppplied"
+  fi
+}
+
+__tm_install_from_url_zip "$@"
+

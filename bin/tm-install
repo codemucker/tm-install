@@ -1,0 +1,60 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install a software package
+#
+
+_include .script.sh
+
+declare -A args
+_parse_args \
+    --file "${BASH_SOURCE[0]}" \
+    --opt-dest          "|group=destination|short=d|desc=destination dir to install to. Only valid if a single package defined" \
+    --opt-namespace     "|group=destination|short=n|desc=Namesepace to install under" \
+    --opt-what          "|remainder|required|multi|desc=What to install" \
+    --result args \
+    -- "$@"
+
+what="${args['what']}"
+
+if [[ -z "$what" ]]; then
+    _error "Provide what to install"
+    _error "  examples: 'plugin:hm-tools' 'tpack:sdkman' 'npm:chalk' 'deno:npm:chalk' 'apt:xeyes' 'url-sh:url=https://get.sdkman.io'"
+    exit 1
+fi
+
+namespace="${args['namespace']}"
+dest="${args['dest']}"
+
+# if it's a git url
+if [[ "$what" == "git@"* ]] || [[ "$what" == "https://github.com/"* ]] || [[ "$what" == "http://github.com/"* ]] || "$what" == "github.com/"* ]]; then
+    # assume a git plugin package
+    package="$what"
+    package_manager="plugin"
+else
+    package_manager="$(echo "$what" | cut -d':' -f1)"
+    package="$(echo "$what" | cut -d':' -f2-)"
+fi
+
+if [[ "$package_manager" == "$package" ]]; then
+_error "Need to supply a package manager prefix, as in 'npm:name-of-package', instead got: '$1'"
+fi
+
+_info "installing '$what'"
+_info "   namespace '$namespace'"
+_info "   dest '$dest'"
+
+case "$package_manager" in 
+    'gh')
+    package_manager="url-sh"
+    break;
+    ;;
+    'gradle')
+    package_manager="mvn"
+    break;
+    ;;
+esac
+
+"tm-install-$package_manager" "$package"
+
+_info "installed '$what'"
+

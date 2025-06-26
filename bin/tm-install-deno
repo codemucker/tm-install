@@ -1,0 +1,16 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install deno package
+#
+
+_include .script.sh
+
+__tm_install_using_deno() {
+  _info "installing deno package: $1"
+  sudo deno install --global "$@"  
+}
+
+
+
+__tm_install_using_deno "$@"
+

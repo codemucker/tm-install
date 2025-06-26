@@ -1,0 +1,19 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install a package using dnf (fedora package manager)
+#
+
+_include .script.sh
+
+__tm_install_using_dnf() {
+  _info "installing dnf package: $1"
+
+  if command -v dnf &> /dev/null; then
+    sudo dnf install "$@"
+  else
+    _fail "'dnf' is not installed"
+  fi
+}
+
+__tm_install_using_dnf"$@"
+

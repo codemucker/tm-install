@@ -1,0 +1,20 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install a  sqlite3 package
+#
+
+_include .script.sh
+
+if [[ -z "${1:-}" ]]; then
+    _fail "Specify a sqlite3 extensions to install"
+fi
+
+
+__tm_install_sqlite3_pkg(){
+  local pkg="$1"
+
+  _todo "implement me"
+}
+
+
+__tm_install_sqlite3_pkg "$@"

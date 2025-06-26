@@ -1,0 +1,36 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install sdkman package
+#
+
+_include .script.sh
+
+declare -A args
+_parse_args \
+    --file "${BASH_SOURCE[0]}" \
+    --opt-package "|short=p|remainder|required|desc=sdkman package to install" \
+    --opt-version "|short=v|desc=package version" \
+    --result args \
+    -- "$@"
+
+pkg="${args['package']}"
+version="${args['version']:-
+}"
+_info "installing skdman package: $pkg"
+
+# if command -v sdk &> /dev/null; then
+#   :
+# else
+#   _info "sdkman not installed, installing"
+#   tm-install-tpack sdkman
+#   sdk install "$@"
+# fi
+
+set +Eeuo &>/dev/null
+sdkman_init="$HOME/.sdkman/bin/sdkman-init.sh"
+if [[ ! -f "$sdkman_init" ]]; then
+    _fail "sdkman is not installed. Looked for '$sdkman_init'. Try running 'tm-install tpack:sdkman'"
+fi
+source "$sdkman_init"
+
+sdk install "$pkg"

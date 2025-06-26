@@ -1,0 +1,19 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install an apt package
+#
+
+_include .script.sh
+
+__tm_install_using_apt() {
+  _info "installing apt package: $1"
+
+  if command -v apt-get &> /dev/null; then
+    sudo apt-get install "$@"
+  else
+    _fail "'apt-get' is not installed"
+  fi
+}
+
+__tm_install_using_apt "$@"
+

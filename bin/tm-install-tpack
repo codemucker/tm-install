@@ -1,0 +1,41 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install a tools-manager package
+#
+
+_include .script.sh
+_include .tpack.sh
+
+if [[ -z "${1:-}" ]]; then
+    _fail "Specify a tools-manager (tm) package to install. For a list of packages run 'tm-pkg-ls'"
+fi
+
+__tm_install_tpack(){
+    local qualified_name="$1"
+    
+    _info "installing package named '$qualified_name'"
+    local -A install_config
+    __tm_tpack_read_config "$qualified_name" install_config
+
+    local installer="${install_config['installer']}"
+    local installer_package="${install_config['package']}"
+
+    _info "package '$qualified_name' installer '$installer' and installer package '$installer_package'"
+    tm-install-${installer} "$installer_package"
+
+    #local pkg_sudo="${config[sudo]:-}"
+    #local pkg_install_script="${config[install-script]:-}"
+    #l#ocal pkg_alias="${config[alias]:-}"
+
+    #_info "pkg: installing tool-manager package '$pkg_name' using '$pkg_package'"
+    #tm-install "$pkg_package" 
+
+    # if [[ -n "$pkg_install_script" ]]; then
+    #     # todo: ensure script is executable?
+    #     "$pkg_install_script"
+    # fi
+    _info "installed package '$qualified_name'"
+}
+
+
+__tm_install_tpack "$@"

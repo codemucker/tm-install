@@ -1,0 +1,18 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install maven package
+#
+
+_include .script.sh
+
+__tm_install_using_mvn() {
+  _info "Installing maven package: $1"
+  _fail "TODO: implement me"
+   #"$@"
+   :
+}
+
+
+
+__tm_install_using_mvn "$@"
+

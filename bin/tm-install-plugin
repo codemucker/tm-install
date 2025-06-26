@@ -1,0 +1,26 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install a tool-manager (tm) plugin
+#
+
+_include .script.sh
+
+# #
+# # Install plugins using the tool-manager
+# #
+# __tm_install_tm_plugin() {
+#   _info "installing tool-manager (tm) plugin: $1"
+
+#     declare -A parts
+#   __tm_file_csv_to_array "$1" parts
+#   local url="${parts[install]:-"${parts[package]:-"$1"}}"}"
+  
+  
+#   tm-plugin-install "$@"
+# }
+
+
+
+# __tm_install_tm_plugin "$@"
+
+tm-plugin-install "$@"

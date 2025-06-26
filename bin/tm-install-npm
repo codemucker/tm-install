@@ -1,0 +1,22 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install npm package
+#
+
+_include .script.sh
+
+declare -A args
+# Using --opts-* to capture the command and its arguments after '--'
+_parse_args \
+    --file "${BASH_SOURCE[0]}" \
+    --opt-package "|short=p|remainder|required|desc=npm package to install" \
+    --result args \
+    -- "$@"
+
+pkg="${args['package']}"
+_info "installing package: $pkg"
+
+# TODO: ensure npm installed
+npm install --global "$pkg"
+
+

@@ -1,0 +1,30 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install from a deb file
+#
+
+_include .script.sh
+
+__tm_install_from_url_deb() {
+  declare -A parts
+  __tm_file_csv_to_array "$1" parts
+  local url="${parts[url]:-"${parts[install]:-"$1"}}"}"
+
+  _info "install deb from url '$url'"
+
+   local tmp_file="$(mktemp).deb"
+   # todo: check/add with allowed scripts
+
+   # download artifact
+   curl -fsSL "$url" --output "$tmp_file"
+
+  _info "downloaded, installing...."
+   #install the download
+   sudo apt install $tmp_file || ( rm -f "$tmp_file" && echo "Error installing deb '$url'")
+   rm -f "$tmp_file"
+   _info "...install complete"
+}
+
+
+__tm_install_from_url_deb "$@"
+

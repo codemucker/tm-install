@@ -1,0 +1,39 @@
+#!/usr/bin/env tm-env-bash
+#
+# Install a git repo
+#
+
+_include .script.sh
+
+__tm_install_using_git() {
+  _info "installing from git: $1"
+
+  declare -A package
+  __tm_file_csv_to_array "$1" parts
+  local repo="${package[install]:-"${package[package]:-"${package[repo]:-}"}"}"
+  local dest="${package[dir]:-"${package[dest]:-}"}"
+  local commit="${package[version]:-"${package[commit]:-main}"}"
+
+  if [[ -z "$repo" ]]; then
+    _fail "no repo given in '$1'. Expected 'install=<dir-name>'"
+  fi
+  if [[ -z "$dest" ]]; then
+    _fail "no destiniation dir given in '$1'. Expected 'dir=<dir-name>'"
+  fi
+  local target_dir="$TM_INSTALL_GIT_REPO_DIR/$dest"
+  if [[ -d "$target_dir/.git" ]]; then
+    _info "'$target_dir' is already cloned"
+    return    
+  fi
+
+  mkdir -p "$(dirname $target_dir)"
+  _info "cloning git repo '$repo' to '$target_dir' (#$commit)"
+  git clone "$repo" "$target_dir"
+  _pushd "$target_dir"
+    git checkout "$commit"
+  _popd
+  _info "...clone complete"
+}
+
+
+__tm_install_using_git "$@"

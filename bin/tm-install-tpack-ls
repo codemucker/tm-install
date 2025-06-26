@@ -1,0 +1,9 @@
+#!/usr/bin/env tm-env-bash
+#
+# List avaiable packages
+#
+
+_include .script.sh
+_include .tpack.sh
+
+_todo "List available packages"
