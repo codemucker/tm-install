@@ -22,7 +22,7 @@ _info "installing skdman package: $pkg"
 #   :
 # else
 #   _info "sdkman not installed, installing"
-#   tm-install-tpack sdkman
+#   tm-install-pkg sdkman
 #   sdk install "$@"
 # fi
 
