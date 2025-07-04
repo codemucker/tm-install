@@ -19,8 +19,8 @@ _info "installing python pip package: $pkg"
 # for systems that are externally managed, we need a virtual env, and can't installpip directly. For now, always use a virtual env
 use_venv="$(tm-cfg-get --this --key TM_INSTALL_USE_VENV --default 1 --no-prompt)"
 use_uv="$(tm-cfg-get --this --key TM_INSTALL_USE_UV --default 1 --no-prompt)"
-pip_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_PIP_VENV_DIR --default "$TM_INSTALL_VAR_DIR/.venv-pip" --no-prompt)"
-uv_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_UV_VENV_DIR --default "$TM_INSTALL_VAR_DIR/.venv-uv" --no-prompt)"
+pip_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_PIP_VENV_DIR --default "$TM_INSTALL_STATE_DIR/.venv-pip" --no-prompt)"
+uv_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_UV_VENV_DIR --default "$TM_INSTALL_STATE_DIR/.venv-uv" --no-prompt)"
 python_version="$(tm-cfg-get --this --key TM_INSTALL_PYTHON_VERSION --default "3.13" --no-prompt)"
 
 #

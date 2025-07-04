@@ -20,13 +20,13 @@ __tm_tpack_read_config(){
     
     for registry in $TM_INSTALL_REGISTRIES; do
         try_pkg_ini_files+=( 
-            "$registry/$vendor/$package_name/$package_name@$version.ini" 
-            "$registry/$vendor/$package_name/$package_name.ini" 
-            "$registry/$vendor/$package_name/package@$version.ini" 
-            "$registry/$vendor/$package_name/package.ini" 
-            "$registry/$vendor/$package_name@$version.ini" 
-            "$registry/$vendor/$package_name.ini"
-            "$registry/$vendor/package.ini"
+            "$registry/$vendor/$package_name/$package_name@$version.conf"
+            "$registry/$vendor/$package_name/$package_name.conf"
+            "$registry/$vendor/$package_name/package@$version.conf"
+            "$registry/$vendor/$package_name/package.conf"
+            "$registry/$vendor/$package_name@$version.conf"
+            "$registry/$vendor/$package_name.conf"
+            "$registry/$vendor/package.conf"
         )
     done
 
