@@ -1,4 +1,4 @@
-#!/usr/bin/env tm-env-bash
+#!/usr/bin/env env-tm-bash
 #
 # Install npm package
 #
@@ -13,10 +13,11 @@ _parse_args \
     --result args \
     -- "$@"
 
-pkg="${args['package']}"
-_info "installing package: $pkg"
+main(){
+  local pkg="${args['package']}"
+  _info "installing package: $pkg"
 
-# TODO: ensure npm installed
-npm install --global "$pkg"
-
-
+  # TODO: ensure npm installed
+  npm install --global "$pkg"
+}
+main "$@"

@@ -1,0 +1,26 @@
+#!/usr/bin/env env-tm-bash
+#
+# Install a python pip package globally
+#
+
+_include .script.sh
+
+declare -A args
+_parse_args \
+    --file "${BASH_SOURCE[0]}" \
+    --opt-package "|short=p|remainder|required|desc=got package or url to install" \
+    --result args \
+    -- "$@"
+
+main(){
+  local pkg="${args['package']}"
+  _info "installing go package: $pkg"
+
+  # todo, check go is installed
+  if ! _ensure_installed go; then
+      _fail "Could not install package '${pkg}' as 'go' is not installed"
+  fi
+  go install "${pkg}"
+}
+
+main "$@"

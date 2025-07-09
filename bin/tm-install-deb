@@ -1,14 +1,15 @@
-#!/usr/bin/env tm-env-bash
+#!/usr/bin/env env-tm-bash
 #
 # Install from a deb file
 #
 
-_include .script.sh
+_include .script.sh @tm/lib.io.csv.sh
 
 __tm_install_from_url_deb() {
+  local data_csv="$1"
   declare -A parts
-  _tm::file::csv::to_array "$1" parts
-  local url="${parts[url]:-"${parts[install]:-"$1"}}"}"
+  _tm::io::csv::to_array "$data_csv" parts
+  local url="${parts[url]:-"${parts[install]:-"$data_csv"}}"}"
 
   _info "install deb from url '$url'"
 
@@ -20,6 +21,7 @@ __tm_install_from_url_deb() {
 
   _info "downloaded, installing...."
    #install the download
+   _ensure_installed_or_fail "apt"
    sudo apt install $tmp_file || ( rm -f "$tmp_file" && echo "Error installing deb '$url'")
    rm -f "$tmp_file"
    _info "...install complete"

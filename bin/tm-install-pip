@@ -1,4 +1,4 @@
-#!/usr/bin/env tm-env-bash
+#!/usr/bin/env env-tm-bash
 #
 # Install a python pip package globally
 #
@@ -8,36 +8,45 @@ _include .script.sh
 declare -A args
 _parse_args \
     --file "${BASH_SOURCE[0]}" \
-    --opt-package "|short=p|remainder|required|desc=pip package to install" \
+    --opt-package "|short=p|remainder|required|desc=pip package or package conf file to install from" \
     --opt-plugin "|desc=the plugin to install this for. Otherwise global (TODO)" \
+    
     --result args \
     -- "$@"
 
-pkg="${args['package']}"
-_info "installing python pip package: $pkg"
+main(){
+  local file_or_parts="${args[package]}"
+  declare -A parts
+  _tm::install::read_install_details "${file_or_parts}" parts
 
-# for systems that are externally managed, we need a virtual env, and can't installpip directly. For now, always use a virtual env
-use_venv="$(tm-cfg-get --this --key TM_INSTALL_USE_VENV --default 1 --no-prompt)"
-use_uv="$(tm-cfg-get --this --key TM_INSTALL_USE_UV --default 1 --no-prompt)"
-pip_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_PIP_VENV_DIR --default "$TM_INSTALL_STATE_DIR/.venv-pip" --no-prompt)"
-uv_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_UV_VENV_DIR --default "$TM_INSTALL_STATE_DIR/.venv-uv" --no-prompt)"
-python_version="$(tm-cfg-get --this --key TM_INSTALL_PYTHON_VERSION --default "3.13" --no-prompt)"
+  local pkg="${parts['package']}"
+  _info "installing python pip package: $pkg"
 
-#
-# TODO: make this available per plugin. Each plugin woudl have their own env
-#
-if [[ "$use_uv" == "1" ]]; then
-    if [[ ! -d "$$uv_venv_dir" ]]; then
-        uv venv "$uv_venv_dir" --python $python_version
-    fi
-    # activate env
-    source "$uv_venv_dir/bin/activate"
-    uv pip install "$pkg"
-    #uv deactivate
-else
-    if [[ "$use_venv" == "1" ]]; then
-        _info "TODO: pip venv"
-    else
-        _python -m pip install "$pkg"    
-    fi
-fi
+  # for systems that are externally managed, we need a virtual env, and can't installpip directly. For now, always use a virtual env
+  local use_venv="$(tm-cfg-get --this --key TM_INSTALL_USE_VENV --default 1 --no-prompt)"
+  local use_uv="$(tm-cfg-get --this --key TM_INSTALL_USE_UV --default 1 --no-prompt)"
+  local pip_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_PIP_VENV_DIR --default "$TM_INSTALL_STATE_DIR/.venv-pip" --no-prompt)"
+  local uv_venv_dir="$(tm-cfg-get --this --key TM_INSTALL_UV_VENV_DIR --default "$TM_INSTALL_STATE_DIR/.venv-uv" --no-prompt)"
+  local python_version="$(tm-cfg-get --this --key TM_INSTALL_PYTHON_VERSION --default "3.13" --no-prompt)"
+
+  #
+  # TODO: make this available per plugin. Each plugin woudl have their own env
+  #
+  if [[ "$use_uv" == "1" ]]; then
+      if [[ ! -d "$$uv_venv_dir" ]]; then
+          uv venv "$uv_venv_dir" --python $python_version
+      fi
+      # activate env
+      source "$uv_venv_dir/bin/activate"
+      uv pip install "$pkg"
+      #uv deactivate
+  else
+      if [[ "$use_venv" == "1" ]]; then
+          _info "TODO: pip venv"
+      else
+          _python -m pip install "$pkg"
+      fi
+  fi
+}
+
+main "$@"

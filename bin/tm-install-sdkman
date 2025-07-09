@@ -1,4 +1,4 @@
-#!/usr/bin/env tm-env-bash
+#!/usr/bin/env env-tm-bash
 #
 # Install sdkman package
 #
@@ -29,7 +29,7 @@ _info "installing skdman package: $pkg"
 set +Eeuo &>/dev/null
 sdkman_init="$HOME/.sdkman/bin/sdkman-init.sh"
 if [[ ! -f "$sdkman_init" ]]; then
-    _fail "sdkman is not installed. Looked for '$sdkman_init'. Try running 'tm-install tpack:sdkman'"
+    _fail "sdkman is not installed. Looked for '$sdkman_init'. Try running 'tm-install tpkg:sdkman'"
 fi
 source "$sdkman_init"
 

@@ -1,11 +1,11 @@
-#!/usr/bin/env tm-env-bash
+#!/usr/bin/env env-tm-bash
 #
 # Install an apt package
 #
 
 _include .script.sh
 
-__tm_install_using_apt() {
+main() {
   _info "installing apt package: $1"
 
   if command -v apt-get &> /dev/null; then
@@ -15,5 +15,5 @@ __tm_install_using_apt() {
   fi
 }
 
-__tm_install_using_apt "$@"
+main "$@"
 

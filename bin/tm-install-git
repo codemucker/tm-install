@@ -1,39 +1,49 @@
-#!/usr/bin/env tm-env-bash
+#!/usr/bin/env env-tm-bash
 #
 # Install a git repo
 #
 
-_include .script.sh
+_include_once .script.sh @tm/lib.io.csv.sh
 
-__tm_install_using_git() {
-  _info "installing from git: $1"
-
+main() {
+  local file_or_parts="$1"
   declare -A package
-  _tm::file::csv::to_array "$1" parts
-  local repo="${package[install]:-"${package[package]:-"${package[repo]:-}"}"}"
-  local dest="${package[dir]:-"${package[dest]:-}"}"
+  _tm::install::read_install_details "${file_or_parts}" package
+
+  local repo="${package[repo]:-}"
+  local dest="${package[install_dir]:-"${package[dir]:-"${package[dest]:-${package[package]}}"}"}"
   local commit="${package[version]:-"${package[commit]:-main}"}"
 
   if [[ -z "$repo" ]]; then
-    _fail "no repo given in '$1'. Expected 'install=<dir-name>'"
+    _fail "no repo given in '$file_or_parts'"
   fi
   if [[ -z "$dest" ]]; then
-    _fail "no destiniation dir given in '$1'. Expected 'dir=<dir-name>'"
-  fi
-  local target_dir="$TM_INSTALL_GIT_REPO_DIR/$dest"
-  if [[ -d "$target_dir/.git" ]]; then
-    _info "'$target_dir' is already cloned"
-    return    
+    _fail "no destination dir given in '$file_or_parts'. Expected 'dir=<dir-name>'"
   fi
 
-  mkdir -p "$(dirname $target_dir)"
-  _info "cloning git repo '$repo' to '$target_dir' (#$commit)"
-  git clone "$repo" "$target_dir"
-  _pushd "$target_dir"
-    git checkout "$commit"
-  _popd
-  _info "...clone complete"
+  local target_dir
+  if [[ "$dest" == "/"*  ]]; then
+    target_dir="$dest"
+  else
+    target_dir="$TM_INSTALL_GIT_REPO_DIR/$dest"
+  fi
+  if [[ -d "$target_dir/.git" ]]; then
+    _info "'$target_dir' is already cloned. Fast forwarding"
+    _pushd "$target_dir"
+      git pull --ff-only
+    _popd
+    _info "...update complete"
+    return
+  else
+    mkdir -p "$(dirname $target_dir)"
+    _info "cloning git repo '$repo' to '$target_dir' (#$commit)"
+    git clone "$repo" "$target_dir"
+    _pushd "$target_dir"
+      git checkout "$commit"
+    _popd
+    _info "...clone complete"
+  fi
 }
 
 
-__tm_install_using_git "$@"
+main "$@"

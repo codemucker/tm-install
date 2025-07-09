@@ -1,17 +1,19 @@
-#!/usr/bin/env tm-env-bash
+#!/usr/bin/env env-tm-bash
 #
 # Install from url as a zip file
 #
 
-_include .script.sh
+_include .script.sh @tm/lib.io.csv.sh
 
-__tm_install_from_url_zip() {
+main() {
+    local file_or_parts="${1}"
     declare -A parts
-    _tm::file::csv::to_array "$1" parts
+    _tm::install::read_install_details "${file_or_parts}" parts
+
     local url="${parts[url]:-"${parts[install]:-"$1"}}"}"
     local user="${parts[user]:-user}"
     local script="${parts[script]:-}"
-    local dest="${parts[dir]:-"${parts[dest]:-}"}"
+    local dest="$(_tm::util::array::get_first parts install_dir dir dest)"
 
     local prefix_cmd=""
     if [[ "$user" == "root" ]]; then
@@ -47,5 +49,5 @@ __tm_install_from_url_zip() {
   fi
 }
 
-__tm_install_from_url_zip "$@"
+main "$@"
 
